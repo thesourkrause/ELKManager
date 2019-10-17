@@ -8,15 +8,25 @@ Powershell Script to Manage Deployment of ELK Agents on Windows Based Systems.
 * Valid agents within the current working directory (as subdirectories, e.g. ./winlogbeat/)
 * Patience
 
-## Function Outputs
+## Functions
 ### _Get-ELKManagedComputerStatus_
 This function queries the computers in a given container and validates whether the captures the current state of the service and install.
 
 This function returns an array called _AgentInformation_ with three keys: _SystemName,ServiceStatus,Installed_
 
-###### Examples
+###### Switches:
+* _OrganizationalUnit_ - the full distinquished name you would like to search through (no default. required)
+* _Credentials_ - pass through credentials captured with (Get-Credential), (Default, prompt for credentials)
+* _Controller_ - the name of the Domain Controller you will connect to, will be removed in the future. (No default, required)
+* _Service_ - the name of the agent you are querying for information about (Default, winlogbeat
 
 
+### Get-
+
+
+
+### Examples
+##### Example 1
 ###### Get the WinLogBeat Status, Install Missing Agents, and Restart Stalled Agents
 ```
 #Get Managed Computer WinLogBeat Agent Status
