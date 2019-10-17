@@ -14,14 +14,28 @@ This function queries the computers in a given container and validates whether t
 
 This function returns an array called _AgentInformation_ with three keys: _SystemName,ServiceStatus,Installed_
 
-###### Use Cases:
+###### Examples
 
-* Piping information to antoher function such as Install-ELKAgent, Start-ELKAgent, etc based off of Installed,ServiceStatus
 
-e.g.
+###### Get the WinLogBeat Status, Install Missing Agents, and Restart Stalled Agents
+```
+#Get Managed Computer WinLogBeat Agent Status
+$Status = Get-ELKManagedComputerStatus -OrganizationalUnit "DC=contoso,DC=local" -Controller CONTOSDC01
 
-`$Status = Get-ELKManagedComputerStatus -OrganizationalUnit "DC=contoso,DC=local" -Controller CONTOSDC01`
+# Filter those without the agent
+$NotInstalled = (Status.SystemName | Where {$_.Installed -eq $false})
 
-`$NotInstalled = (Status.SystemName | Where {$_.Installed -eq $false})`
+# Filter those with the agent not running
+$NotRunning = (Status.SystemName | Where {$_.ServiceStatus -eq "Stopped"})
 
-`$NotRunning = (Status.SystemName | Where {$_.ServiceStatus -eq "Stopped"})`
+# Install WinLogBeat on computers where it is not installed
+Install-ELKAgent -ComputerList $NotInstalled 
+
+# Restart the WinLogBeat agent on computers where the service is stoped
+Start-ELKAgent -ComputerList $NotRunning
+
+#Export the complete list for reporting purposes
+$Status | Export-CSV "$PWD\AgentStatus-WinLogBeat.csv" -NoTypeInformation
+
+```
+
